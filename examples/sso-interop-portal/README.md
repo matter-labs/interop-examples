@@ -41,7 +41,17 @@ latest versions of `anvil` via
 
 You will need a wallet with some
 [testnet ETH](https://docs.zksync.io/zksync-network/zksync-era/ecosystem/network-faucets#sepolia-faucets)
-on sepolia and some testnet ETH on the ZKsync OS testnet. Follow the
+on sepolia and some testnet ETH on the ZKsync OS testnet. This wallet will be
+used on the backend to deploy new SSO accounts, finalize L1 interop
+transactions, and act as a faucet.
+
+> Make sure to use a wallet that does not have any real funds on any mainnet
+> network! This wallet should be for used development purposes only. If you're
+> not sure what wallet to use, check out the
+> [metamask browser extension](https://metamask.io/) or making a wallet with the
+> [`cast` CLI](https://getfoundry.sh/cast/reference/wallet).
+
+Follow the
 [bridging instructions](https://docs.zksync.io/zksync-network/zksync-os/network-details#bridging-testnet-eth)
 in the ZKsync docs to bridge some testnet ETH from sepolia to ZKsync OS testnet.
 Make sure to leave some funds on sepolia as well.
@@ -80,6 +90,18 @@ Then start the app with:
 ```bash
 bun dev
 ```
+
+#### Account setup
+
+Once the app is running, you must create a new account by following the steps on
+the home tab:
+
+1. Create a new passkey.
+2. Activate your new wallet (note: this is different than the wallet you used
+   for the backend)
+
+Once completed, you should have an embedded app-specific wallet initialized with
+some testnet funds to try out the other tabs.
 
 ### Running with L2 <-> L2 interop
 
@@ -137,7 +159,7 @@ also find it in the
 #### Setup the frontend environment variables
 
 Inside the `frontend` folder create a new `.env` file. Use the `.env.example`
-file as a guide for your `.env`.
+file as a guide for your `.env` to enable the interop tab.
 
 #### Restart the frontend
 
