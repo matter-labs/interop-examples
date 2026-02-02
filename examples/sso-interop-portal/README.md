@@ -59,9 +59,9 @@ Make sure to leave some funds on sepolia as well.
 #### Setup the backend environment variables
 
 Inside the `backend` folder create a new `.env` file. Use the `.env.example`
-file as a guide for your `.env`.
-The only environment variable that MUST be set is the `EXECUTOR_PRIVATE_KEY`.
-This should be the private key of the wallet with testnet funds from the previous step.
+file as a guide for your `.env`. The only environment variable that MUST be set
+is the `EXECUTOR_PRIVATE_KEY`. This should be the private key of the wallet with
+testnet funds from the previous step.
 
 #### Run the backend
 
