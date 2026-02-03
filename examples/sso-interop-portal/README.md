@@ -30,9 +30,9 @@ More details can be found in the respective folder's `README.md` files.
 You must have [`bun`](https://bun.com/docs/installation) installed to run the
 basic app without L2 <-> L2 interop.
 
-To run the full app including L2 <-> L2 interop, you must also install
-[Rust](https://rust-lang.org/tools/install/) and version `1.3.4` of `anvil` via
-[`foundry`](https://getfoundry.sh/introduction/installation).
+To run the full app including L2 <-> L2 interop, you must also install **the
+latest stable versions** of [Rust](https://rust-lang.org/tools/install/) and
+`anvil` via [`foundry`](https://getfoundry.sh/introduction/installation).
 
 ### Basic setup (without L2 <-> L2 interop)
 
@@ -111,28 +111,17 @@ some testnet funds to try out the other tabs.
 Move into the ZKsync OS server folder:
 
 ```bash
-cd examples/sso-interop-portal/interop-deps/zksync-os-server
+cd zksync-os-server
 ```
 
-Then in three separate terminal windows run:
-
-(Runs the local L1)
+Then run:
 
 ```bash
-anvil --load-state ./local-chains/v31/zkos-l1-state.json --port 8545
+./run_local.sh ./local-chains/v31.0/multi_chain
 ```
 
-(Runs the local L2: Chain A)
-
-```bash
-cargo run --release -- --config ./local-chains/v31/multiple-chains/chain1.json
-```
-
-(Runs the local L2: Chain B)
-
-```bash
-cargo run --release -- --config ./local-chains/v31/multiple-chains/chain2.json
-```
+The first time running this can take a couple minutes for the dependencies to
+compile.
 
 You should now have three local chains running:
 
@@ -144,17 +133,21 @@ You should now have three local chains running:
 > completely erased. These are in-memory nodes, so they do no persist any
 > storage of the chains.
 
-In a fourth terminal window, move into the `cast-interop` folder:
+#### Fund the test wallet
+
+Make sure the test wallet has enough funds by running the commands below:
 
 ```bash
-cd examples/sso-interop-portal/interop-deps/cast-interop
+export BRIDGEHUB_ADDRESS=0xc3c69adbceae631c73b4c3924211c6741583c3ae
+export CHAIN_ID=6565
+export SEPOLIA_RPC=http://localhost:8545
+export ZKOS_RPC=http://localhost:3050
+export ADDRESS=0x36615Cf349d7F6344891B1e7CA7C72883F5dc049
+export VALUE_TO_BRIDGE=1000000000000000000
 ```
 
-Then run the command below to enable automatic
-execution of all the bundles on the chains above:
-
 ```bash
-cargo run --release -- auto-relay --rpc http://0.0.0.0:3050 http://0.0.0.0:3051 --private-key 0x7726827caac94a7f9e1b160f7ea819f172f7b6f9d2a97f992c38edeab82d4110
+cast send -r $SEPOLIA_RPC $BRIDGEHUB_ADDRESS "requestL2TransactionDirect((uint256,uint256,address,uint256,bytes,uint256,uint256,bytes[],address))" "($CHAIN_ID,$VALUE_TO_BRIDGE,$ADDRESS,50,0x,300000,800,[],$ADDRESS)" --value $VALUE_TO_BRIDGE --private-key=0x7726827caac94a7f9e1b160f7ea819f172f7b6f9d2a97f992c38edeab82d4110
 ```
 
 #### Deploy a local test USD token
