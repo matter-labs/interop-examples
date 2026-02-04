@@ -120,7 +120,7 @@ Then run:
 ./run_local.sh ./local-chains/v31.0/multi_chain
 ```
 
-The first time running this can take a couple minutes for the dependencies to
+The first time running this can take a few minutes for the dependencies to
 compile.
 
 You should now have three local chains running:
@@ -132,23 +132,6 @@ You should now have three local chains running:
 > Note that once you end this process, the history of each chain will be
 > completely erased. These are in-memory nodes, so they do no persist any
 > storage of the chains.
-
-#### Fund the test wallet
-
-Make sure the test wallet has enough funds by running the commands below:
-
-```bash
-export BRIDGEHUB_ADDRESS=0xc3c69adbceae631c73b4c3924211c6741583c3ae
-export CHAIN_ID=6565
-export SEPOLIA_RPC=http://localhost:8545
-export ZKOS_RPC=http://localhost:3050
-export ADDRESS=0x36615Cf349d7F6344891B1e7CA7C72883F5dc049
-export VALUE_TO_BRIDGE=1000000000000000000
-```
-
-```bash
-cast send -r $SEPOLIA_RPC $BRIDGEHUB_ADDRESS "requestL2TransactionDirect((uint256,uint256,address,uint256,bytes,uint256,uint256,bytes[],address))" "($CHAIN_ID,$VALUE_TO_BRIDGE,$ADDRESS,50,0x,300000,800,[],$ADDRESS)" --value $VALUE_TO_BRIDGE --private-key=0x7726827caac94a7f9e1b160f7ea819f172f7b6f9d2a97f992c38edeab82d4110
-```
 
 #### Deploy a local test USD token
 
