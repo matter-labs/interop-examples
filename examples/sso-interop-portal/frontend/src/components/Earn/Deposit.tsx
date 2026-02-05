@@ -8,12 +8,13 @@ import type { PasskeyCredential } from "~/utils/types";
 
 interface Props {
   balance: UseBalanceReturnType;
+  triggerRefresh: () => void;
   shadowAccount?: Address;
   accountAddress?: Address;
   passkeyCredentials?: PasskeyCredential;
 }
 
-export function Deposit({ balance, shadowAccount, accountAddress, passkeyCredentials }: Props) {
+export function Deposit({ balance, shadowAccount, accountAddress, passkeyCredentials, triggerRefresh }: Props) {
   const [depositAmount, setDepositAmount] = useState<string>("0");
   const [isSending, setIsSending] = useState<boolean>(false);
   const [depositSuccess, setDepositSuccess] = useState<boolean>(false);
@@ -58,10 +59,10 @@ export function Deposit({ balance, shadowAccount, accountAddress, passkeyCredent
       setTxHash(hash);
       setDepositSuccess(true);
       balance.refetch();
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
+      triggerRefresh();
+    } catch (error) {
       console.log("Error depositing ETH:", error);
-      setDepositError(error);
+      setDepositError(typeof error === "string" ? error : "unknown error");
     } finally {
       setIsSending(false);
     }
@@ -92,6 +93,7 @@ export function Deposit({ balance, shadowAccount, accountAddress, passkeyCredent
               id="aaveDepositAmount"
               step="0.001"
               placeholder="0.01"
+              min="0"
               value={depositAmount}
               disabled={btnsDisabled || isSending}
               onChange={handleDepositAmountChange}

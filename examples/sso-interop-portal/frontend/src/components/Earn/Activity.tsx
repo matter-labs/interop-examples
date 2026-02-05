@@ -1,54 +1,14 @@
-import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import type { Address } from "viem";
 
-import { STATUS_ENDPOINT } from "~/utils/constants";
 import type { FinalizedTxnState, PendingTxnState } from "~/utils/types";
 
 interface Props {
-  accountAddress?: Address;
+  pendingTxns: PendingTxnState[];
+  finalizedTxns: FinalizedTxnState[];
 }
 
-export function ActivityTab({ accountAddress }: Props) {
-  const [pendingTxns, setPendingTxns] = useState<PendingTxnState[]>([]);
-  const [finalizedTxns, setFinalizedTxns] = useState<FinalizedTxnState[]>([]);
+export function ActivityTab({ pendingTxns, finalizedTxns }: Props) {
   const { t } = useTranslation();
-
-  useEffect(() => {
-    if (!accountAddress) return;
-
-    let cancelled = false;
-
-    async function getActivity() {
-      try {
-        const response = await fetch(STATUS_ENDPOINT, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ accountAddress }),
-        });
-
-        if (!response.ok || cancelled) return;
-
-        const status = await response.json();
-        setPendingTxns(status.responseObject.pending);
-        setFinalizedTxns(status.responseObject.finalized);
-      } catch (err) {
-        console.error("Failed to fetch activity", err);
-      }
-    }
-
-    // run immediately
-    getActivity();
-
-    // then every minute
-    const intervalId = setInterval(getActivity, 60_000);
-
-    // cleanup
-    return () => {
-      cancelled = true;
-      clearInterval(intervalId);
-    };
-  }, [accountAddress]);
 
   if (pendingTxns.length > 0 || finalizedTxns.length > 0) {
     return (
