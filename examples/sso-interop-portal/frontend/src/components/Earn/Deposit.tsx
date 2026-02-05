@@ -58,10 +58,9 @@ export function Deposit({ balance, shadowAccount, accountAddress, passkeyCredent
       setTxHash(hash);
       setDepositSuccess(true);
       balance.refetch();
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
+    } catch (error) {
       console.log("Error depositing ETH:", error);
-      setDepositError(error);
+      setDepositError(typeof error === 'string' ? error : 'unknown error');
     } finally {
       setIsSending(false);
     }
