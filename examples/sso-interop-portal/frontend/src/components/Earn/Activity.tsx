@@ -4,7 +4,7 @@ import type { FinalizedTxnState, PendingTxnState } from "~/utils/types";
 
 interface Props {
   pendingTxns: PendingTxnState[];
-  finalizedTxns: FinalizedTxnState[]
+  finalizedTxns: FinalizedTxnState[];
 }
 
 export function ActivityTab({ pendingTxns, finalizedTxns }: Props) {
