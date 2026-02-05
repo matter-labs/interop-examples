@@ -64,7 +64,7 @@ export function QuickActions({ setActiveTab, balance, accountAddress, shadowAcco
       setIsFaucetSuccess(true);
     } catch (error) {
       console.log("error calling faucet: ", error);
-      setIsFaucetError(typeof error === 'string' ? error : 'unknown error');
+      setIsFaucetError(typeof error === "string" ? error : "unknown error");
     } finally {
       setIsCallingFaucet(false);
     }
@@ -102,19 +102,11 @@ export function QuickActions({ setActiveTab, balance, accountAddress, shadowAcco
         </button>
       )}
 
-      {isFaucetSuccess && (
-         <div
-          className="alert alert-success"
-        >
-          {t("home.faucetSuccess")}
-        </div>
-      )}
+      {isFaucetSuccess && <div className="alert alert-success">{t("home.faucetSuccess")}</div>}
 
       {isFaucetError && (
-         <div
-          className="alert alert-error"
-        >
-          {t("home.faucetFailed")}{" "}{isFaucetError}
+        <div className="alert alert-error">
+          {t("home.faucetFailed")} {isFaucetError}
         </div>
       )}
     </div>
