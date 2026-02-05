@@ -8,13 +8,21 @@ import type { PasskeyCredential } from "~/utils/types";
 
 interface Props {
   aaveBalance: UseReadContractReturnType;
+  triggerRefresh: () => void;
   balance: UseBalanceReturnType;
   shadowAccount?: Address;
   accountAddress?: Address;
   passkeyCredentials?: PasskeyCredential;
 }
 
-export function Withdraw({ aaveBalance, balance, shadowAccount, accountAddress, passkeyCredentials }: Props) {
+export function Withdraw({
+  aaveBalance,
+  balance,
+  shadowAccount,
+  accountAddress,
+  passkeyCredentials,
+  triggerRefresh,
+}: Props) {
   const [withdrawAmount, setWithdrawAmount] = useState<string>("0");
   const [isSending, setIsSending] = useState<boolean>(false);
   const [withdrawSuccess, setWithdrawSuccess] = useState<boolean>(false);
@@ -64,6 +72,7 @@ export function Withdraw({ aaveBalance, balance, shadowAccount, accountAddress, 
       setTxHash(hash);
       setWithdrawSuccess(true);
       balance.refetch();
+      triggerRefresh();
     } catch (error) {
       console.log("Error withdrawing from Aave", error);
       setWithdrawError(typeof error === "string" ? error : "unknown error");
@@ -96,6 +105,7 @@ export function Withdraw({ aaveBalance, balance, shadowAccount, accountAddress, 
               type="number"
               id="aaveWithdrawAmount"
               step="0.001"
+              min="0"
               placeholder="0.01"
               value={withdrawAmount}
               onChange={handleWithdrawAmountChange}
