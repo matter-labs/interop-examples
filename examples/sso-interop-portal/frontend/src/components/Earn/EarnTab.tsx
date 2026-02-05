@@ -1,10 +1,11 @@
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { type Address, erc20Abi, formatEther } from "viem";
 import { sepolia } from "viem/chains";
 import { type UseBalanceReturnType, useReadContract } from "wagmi";
 
-import { AAVE_CONTRACTS } from "~/utils/constants";
-import type { PasskeyCredential } from "~/utils/types";
+import { AAVE_CONTRACTS, STATUS_ENDPOINT } from "~/utils/constants";
+import type { FinalizedTxnState, PasskeyCredential, PendingTxnState } from "~/utils/types";
 
 import { ActivityTab } from "./Activity";
 import { Deposit } from "./Deposit";
@@ -18,6 +19,9 @@ interface Props {
 }
 
 export function EarnTab({ accountAddress, shadowAccount, balance, passkeyCredentials }: Props) {
+  const [pendingTxns, setPendingTxns] = useState<PendingTxnState[]>([]);
+  const [finalizedTxns, setFinalizedTxns] = useState<FinalizedTxnState[]>([]);
+
   const aaveBalance = useReadContract({
     address: AAVE_CONTRACTS.aToken,
     abi: erc20Abi,
@@ -27,6 +31,34 @@ export function EarnTab({ accountAddress, shadowAccount, balance, passkeyCredent
   });
 
   const { t } = useTranslation();
+
+  const getActivity = async () => {
+    try {
+      const response = await fetch(STATUS_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ accountAddress }),
+      });
+
+      if (!response.ok) return;
+
+      const status = await response.json();
+      setPendingTxns(status.responseObject.pending);
+      setFinalizedTxns(status.responseObject.finalized);
+    } catch (err) {
+      console.error("Failed to fetch activity", err);
+    }
+  };
+
+  useEffect(() => {
+    if (!accountAddress) return;
+    getActivity();
+    const intervalId = setInterval(getActivity, 60_000);
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [accountAddress]);
 
   return (
     <div
@@ -96,6 +128,7 @@ export function EarnTab({ accountAddress, shadowAccount, balance, passkeyCredent
         balance={balance}
         passkeyCredentials={passkeyCredentials}
         accountAddress={accountAddress}
+        getActivity={getActivity}
       />
 
       <Withdraw
@@ -104,9 +137,13 @@ export function EarnTab({ accountAddress, shadowAccount, balance, passkeyCredent
         balance={balance}
         passkeyCredentials={passkeyCredentials}
         accountAddress={accountAddress}
+        getActivity={getActivity}
       />
 
-      <ActivityTab accountAddress={accountAddress} />
+      <ActivityTab
+        pendingTxns={pendingTxns}
+        finalizedTxns={finalizedTxns}
+      />
     </div>
   );
 }
