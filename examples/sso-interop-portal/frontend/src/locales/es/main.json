@@ -1,13 +1,8 @@
 {
   "translation": {
-    "topbar": {
-      "network": "Red",
-      "balance": "Saldo"
-    },
     "home": {
       "getStarted": "Empezar",
       "setupWallet": "Configura tu billetera segura para empezar a enviar y recibir dinero",
-      "createKey": "Crear clave de seguridad",
       "userName": "El nombre de tu clave",
       "createPasskeyBtn": "Crear billetera segura",
       "keyCreated": "✓ Llave de acceso creada",
@@ -17,10 +12,8 @@
       "deployWallet": "Implementa tu monedero inteligente en la red para empezar a gestionar tus fondos.",
       "deployAccountBtn": "Activar billetera",
       "walletBalance": "Tu saldo",
-      "yourWallet": "Tu billetera",
       "resetPasskeyMainBtn": "Restablecer passkey",
       "resetPasskeyAlert": "¿Estás seguro de que deseas redefinir tu passkey? Deberás crear una nueva y desplegar una nueva cuenta.",
-      "quickActions": "Acciones rápidas",
       "quickSendBtn": "Enviar dinero",
       "quickEarnBtn": "Genera intereses",
       "faucetBtn": "Llamar al faucet",
@@ -30,15 +23,10 @@
       "deploying": "Implementando...",
       "deployFailed": "Error en la implementación:",
       "deployAccount": "Implementar cuenta",
-      "refreshing": "Actualizando...",
-      "refreshBalance": "Actualizar saldo",
       "funding": "Fondeando...",
-      "faucetSuccess": "¡Éxito! Tu billetera ha sido fondeada con:\n• 0.01 ETH al EntryPoint\n• 0.01 ETH directamente a la billetera\n• 0.03 ETH a tu cuenta espejo en Sepolia",
-      "faucetFailed": "Error del faucet:",
       "faucet": "Faucet para tu billetera",
       "faucetDesc": "Obtener más fondos de testnet.",
       "balanceError": "Error al cargar el saldo",
-      "balanceFailed": "No se pudo obtener el saldo",
       "copied": "Copiado",
       "deployStep1": "Implementando una nueva cuenta SSO",
       "deployStep2": "Inicializando los módulos de la cuenta",

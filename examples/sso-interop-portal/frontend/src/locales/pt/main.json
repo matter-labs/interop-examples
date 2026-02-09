@@ -1,13 +1,8 @@
 {
   "translation": {
-    "topbar": {
-      "network": "Rede",
-      "balance": "Saldo"
-    },
     "home": {
       "getStarted": "Começar",
       "setupWallet": "Configure sua carteira segura para começar a enviar e receber dinheiro",
-      "createKey": "Criar chave de segurança",
       "userName": "Nome da sua chave",
       "createPasskeyBtn": "Criar carteira segura",
       "keyCreated": "✓ Chave de segurança criada",
@@ -17,10 +12,8 @@
       "deployWallet": "Implante sua carteira inteligente na blockchain para começar a gerenciar seus fundos.",
       "deployAccountBtn": "Ativar carteira",
       "walletBalance": "Seu saldo",
-      "yourWallet": "Sua carteira",
       "resetPasskeyMainBtn": "Redefinir passkey",
       "resetPasskeyAlert": "Tem certeza de que deseja redefinir sua passkey? Você precisará criar uma nova e implantar uma nova conta.",
-      "quickActions": "Ações rápidas",
       "quickSendBtn": "Enviar dinheiro",
       "quickEarnBtn": "Ganhar juros",
       "faucetBtn": "Chamar o faucet",
@@ -30,15 +23,10 @@
       "deploying": "Implantando...",
       "deployFailed": "Falha na implantação:",
       "deployAccount": "Implantar conta",
-      "refreshing": "Atualizando...",
-      "refreshBalance": "Atualizar saldo",
       "funding": "Financiando...",
-      "faucetSuccess": "Sucesso! Sua carteira foi financiada com:\n• 0.01 ETH para o EntryPoint\n• 0.01 ETH diretamente para a carteira\n• 0.03 ETH para sua conta sombra na Sepolia",
-      "faucetFailed": "Falha no faucet:",
       "faucet": "Faucet para sua carteira",
       "faucetDesc": "Obter mais fundos da testnet.",
       "balanceError": "Erro ao carregar o saldo",
-      "balanceFailed": "Falha ao obter o saldo",
       "copied": "Copiado",
       "deployStep1": "Implantando uma nova conta SSO",
       "deployStep2": "Inicializando os módulos da conta",
