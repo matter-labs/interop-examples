@@ -4,13 +4,6 @@
       "network": "Network",
       "balance": "Balance"
     },
-    "nav": {
-      "home": "Home",
-      "send": "Send",
-      "earn": "Earn",
-      "interop": "Interop",
-      "activity": "Activity"
-    },
     "home": {
       "getStarted": "Get Started",
       "setupWallet": "Set up your secure wallet to start sending and receiving money",
@@ -26,10 +19,11 @@
       "walletBalance": "Your Balance",
       "yourWallet": "Your Wallet",
       "resetPasskeyMainBtn": "Reset Passkey",
+      "resetPasskeyAlert": "Are you sure you want to reset your passkey? You will need to create a new one and deploy a new account.",
       "quickActions": "Quick Actions",
       "quickSendBtn": "Send Money",
       "quickEarnBtn": "Earn Interest",
-      "faucetBtn": "Faucet for your wallet",
+      "faucetBtn": "Call faucet",
       "enterUserName": "Please enter your key name",
       "creating": "Creating...",
       "failedToCreateKey": "Failed to create passkey.",
@@ -42,8 +36,22 @@
       "faucetSuccess": "Success! Your wallet has been funded with:\n• 0.01 ETH to EntryPoint\n• 0.01 ETH direct to wallet\n• 0.03 ETH to your shadow account on Sepolia",
       "faucetFailed": "Faucet failed:",
       "faucet": "Faucet for your wallet",
+      "faucetDesc": "Get more testnet funds.",
       "balanceError": "Error loading balance",
-      "balanceFailed": "Failed to get balance"
+      "balanceFailed": "Failed to get balance",
+      "copied": "Copied",
+      "deployStep1": "Deploying a new SSO account",
+      "deployStep2": "Initializing the modules on the account",
+      "deployStep3": "Funding the account with testnet ETH",
+      "walletActivated": "Wallet Activated!",
+      "quickInteropBtn": "Interop",
+      "sendTitle": "Send",
+      "sendDesc": "Transfer ETH to any address on ZKsync OS network",
+      "earnTitle": "Earn",
+      "earnDesc": "Deposit ETH to Aave on L1 and earn interest",
+      "interopTitle": "Interop",
+      "interopDesc": "Transfer tokens between local ZKsync chains",
+      "aaveDeposits": "Aave Deposits"
     },
     "send": {
       "sendMoney": "Send Money",
@@ -87,9 +95,11 @@
       "finalized": "Finalized",
       "action": "Action",
       "status": "Status",
-      "finalizedAt": "Finalized At"
+      "finalizedAt": "Finalized At",
+      "transaction": "Transaction"
     },
     "interop": {
+      "networkHeader": "Local networks",
       "title": "Cross-Chain Interop (Local)",
       "subtitle": "Send messages between two local ZKsync chains using L2-to-L2 interop messaging.",
       "noteLabel": "Note:",
@@ -142,11 +152,6 @@
       "directionError": "Cannot transfer from chain B to chain A yet.",
       "invalidAmountA": "The amount is higher than your balance on Chain A.",
       "invalidAmountB": "The amount is higher than your balance on Chain B."
-    },
-    "footer": {
-      "network": "Network:",
-      "poweredByZk": "Powered by ZKSync",
-      "securedByPasskeys": "Secured by Passkey Authentication"
     }
   }
 }

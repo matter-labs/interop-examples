@@ -1,4 +1,4 @@
-import { type ChangeEvent, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { erc20Abi, formatUnits, type Hex, parseUnits, zeroAddress } from "viem";
 import { useReadContract, useReadContracts } from "wagmi";
@@ -80,14 +80,6 @@ export function TokenTransfer({ networksDetected }: Props) {
     tokenBBalance.refetch();
   }
 
-  function handleDirectionChange(e: ChangeEvent<HTMLSelectElement>) {
-    if (e.target.value === "a-to-b") {
-      setIsAToB(true);
-    } else {
-      setIsAToB(false);
-    }
-  }
-
   function onProgress(step: string) {
     setProgress((prev) => [...prev, step]);
   }
@@ -130,9 +122,9 @@ export function TokenTransfer({ networksDetected }: Props) {
       setTxInfo(result);
       setIsSuccess(true);
       handleRefresh();
-    } catch (error) {
+    } catch (error: any) {
       console.log("Error sending tokens: ", error, typeof error);
-      setError(typeof error === "string" ? error : "unknown error");
+      setError(error.message && typeof error.message === "string" ? error.message : "unknown error");
     } finally {
       setIsSending(false);
     }
@@ -140,26 +132,27 @@ export function TokenTransfer({ networksDetected }: Props) {
 
   return (
     <>
-      <div className="card">
-        <div
-          id="interop-token-transfer-title"
-          className="card-title"
-        >
-          {t("interop.tokenTransferTitle")}
-        </div>
-        <div
-          id="interop-token-transfer-subtitle"
-          className="card-subtitle"
-        >
-          {t("interop.tokenTransferSubtitle")}
-        </div>
+      <div
+        id="interop-token-transfer-title"
+        className="tab-title"
+        style={{ marginTop: "8px", marginBottom: "16px" }}
+      >
+        {t("interop.tokenTransferTitle")}
+      </div>
+      <p
+        id="interop-token-transfer-subtitle"
+        className="tab-description"
+      >
+        {t("interop.tokenTransferSubtitle")}
+      </p>
 
-        {/* <!-- Token Info --> */}
-        <div
-          id="token-info"
-          className="alert-info"
-        >
-          <div className="info-row">
+      {/* <!-- Token Info --> */}
+      <div
+        id="token-info"
+        className="token-info-row"
+      >
+        <div className="aave-info">
+          <div className="aave-info-row">
             <span
               id="interop-token-label"
               className="info-label"
@@ -171,7 +164,7 @@ export function TokenTransfer({ networksDetected }: Props) {
               {tokenAResult.isSuccess && <span>({tokenAResult.data[2]?.result})</span>}
             </span>
           </div>
-          <div className="info-row">
+          <div className="aave-info-row">
             <span
               id="interop-token-address"
               className="info-label"
@@ -182,7 +175,10 @@ export function TokenTransfer({ networksDetected }: Props) {
               <code id="tokenAddress">{TOKEN_ADDRESS}</code>
             </span>
           </div>
-          <div className="info-row">
+        </div>
+
+        <div className="aave-info">
+          <div className="aave-info-row">
             <span
               id="interop-chain-a-balance"
               className="info-label"
@@ -204,7 +200,7 @@ export function TokenTransfer({ networksDetected }: Props) {
               )}
             </span>
           </div>
-          <div className="info-row">
+          <div className="aave-info-row">
             <span
               id="interop-chain-b-balance"
               className="info-label"
@@ -232,62 +228,84 @@ export function TokenTransfer({ networksDetected }: Props) {
           </div>
           <button
             id="refreshTokenBalancesBtn"
+            className="refresh-btn-inline"
             onClick={handleRefresh}
+            type="button"
           >
             {t("interop.refreshTokenBalanceBtn")}
           </button>
         </div>
+      </div>
 
+      <div className="card">
         {/* <!-- Transfer Form --> */}
         <form
           id="token-transfer-form"
           onSubmit={handleSubmit}
         >
-          <div className="form-group">
-            <label
-              id="interop-token-transfer-amount"
-              htmlFor="tokenTransferAmount"
+          <div className="form-row">
+            <div
+              className="form-group"
+              style={{ flex: 1 }}
             >
-              {t("interop.tokenTransferAmount")}
-            </label>
-            <input
-              type="number"
-              id="tokenTransferAmount"
-              placeholder="100"
-              value={amountInput}
-              step="1"
-              min="0"
-              onChange={(e) => setAmountInput(e.target.value)}
-              disabled={!networksDetected || isSending}
-            />
-          </div>
+              <label
+                id="interop-token-transfer-amount"
+                htmlFor="tokenTransferAmount"
+              >
+                {t("interop.tokenTransferAmount")}
+              </label>
+              <input
+                type="number"
+                id="tokenTransferAmount"
+                placeholder="100"
+                value={amountInput}
+                step="1"
+                min="0"
+                onChange={(e) => setAmountInput(e.target.value)}
+                disabled={!networksDetected || isSending}
+              />
+            </div>
 
-          <div className="form-group">
-            <label
-              id="interop-transfer-direction"
-              htmlFor="tokenTransferDirection"
+            <div
+              className="form-group"
+              style={{ flexShrink: 0 }}
             >
-              {t("interop.transferDirection")}
-            </label>
-            <select
-              id="tokenTransferDirection"
-              className="interop-direction-box"
-              onChange={handleDirectionChange}
-              disabled={!networksDetected || isSending}
-            >
-              <option
-                id="interop-transfer-token-a-to-b"
-                value="a-to-b"
-              >
-                {t("interop.aToB")}
-              </option>
-              <option
-                id="interop-transfer-token-b-to-a"
-                value="b-to-a"
-              >
-                {t("interop.bToA")}
-              </option>
-            </select>
+              <label id="interop-transfer-direction">{t("interop.transferDirection")}</label>
+              <div className="direction-swap">
+                <span className="direction-chain">
+                  <span className="direction-label">From</span>{" "}
+                  {isAToB ? t("interop.chainA").replace(":", "") : t("interop.chainB").replace(":", "")}
+                </span>
+                <button
+                  type="button"
+                  className="swap-btn secondary-brand"
+                  onClick={() => setIsAToB(!isAToB)}
+                  disabled={!networksDetected || isSending}
+                  aria-label="Swap direction"
+                >
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M7 16L3 12M3 12L7 8M3 12H21M17 8L21 12M21 12L17 16M21 12H3"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                  <span className="swap-text">Swap</span>
+                </button>
+                <span className="direction-chain">
+                  <span className="direction-label">To</span>{" "}
+                  {isAToB ? t("interop.chainB").replace(":", "") : t("interop.chainA").replace(":", "")}
+                </span>
+              </div>
+            </div>
           </div>
 
           <button
@@ -302,10 +320,116 @@ export function TokenTransfer({ networksDetected }: Props) {
         {isSending && (
           <div
             id="token-transfer-progress"
-            className="alert alert-info"
+            className="progress-section"
           >
-            <strong id="tokenTransferProgressTitle">{t("interop.transferProgressTitle")}</strong>
-            <div id="tokenTransferProgressSteps">
+            <div className="progress-title">
+              <svg
+                className="deploying-spinner"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <style>
+                  {`.spinner_zWVm{animation:spinner_5QiW 1.2s linear infinite,spinner_PnZo 1.2s linear infinite}
+                  .spinner_gfyD{animation:spinner_5QiW 1.2s linear infinite,spinner_4j7o 1.2s linear infinite;animation-delay:.1s}
+                  .spinner_T5JJ{animation:spinner_5QiW 1.2s linear infinite,spinner_fLK4 1.2s linear infinite;animation-delay:.1s}
+                  .spinner_E3Wz{animation:spinner_5QiW 1.2s linear infinite,spinner_tDji 1.2s linear infinite;animation-delay:.2s}
+                  .spinner_g2vs{animation:spinner_5QiW 1.2s linear infinite,spinner_CMiT 1.2s linear infinite;animation-delay:.2s}
+                  .spinner_ctYB{animation:spinner_5QiW 1.2s linear infinite,spinner_cHKR 1.2s linear infinite;animation-delay:.2s}
+                  .spinner_BDNj{animation:spinner_5QiW 1.2s linear infinite,spinner_Re6e 1.2s linear infinite;animation-delay:.3s}
+                  .spinner_rCw3{animation:spinner_5QiW 1.2s linear infinite,spinner_EJmJ 1.2s linear infinite;animation-delay:.3s}
+                  .spinner_Rszm{animation:spinner_5QiW 1.2s linear infinite,spinner_YJOP 1.2s linear infinite;animation-delay:.4s}
+                  @keyframes spinner_5QiW{0%,50%{width:7.33px;height:7.33px}25%{width:1.33px;height:1.33px}}
+                  @keyframes spinner_PnZo{0%,50%{x:1px;y:1px}25%{x:4px;y:4px}}
+                  @keyframes spinner_4j7o{0%,50%{x:8.33px;y:1px}25%{x:11.33px;y:4px}}
+                  @keyframes spinner_fLK4{0%,50%{x:1px;y:8.33px}25%{x:4px;y:11.33px}}
+                  @keyframes spinner_tDji{0%,50%{x:15.66px;y:1px}25%{x:18.66px;y:4px}}
+                  @keyframes spinner_CMiT{0%,50%{x:8.33px;y:8.33px}25%{x:11.33px;y:11.33px}}
+                  @keyframes spinner_cHKR{0%,50%{x:1px;y:15.66px}25%{x:4px;y:18.66px}}
+                  @keyframes spinner_Re6e{0%,50%{x:15.66px;y:8.33px}25%{x:18.66px;y:11.33px}}
+                  @keyframes spinner_EJmJ{0%,50%{x:8.33px;y:15.66px}25%{x:11.33px;y:18.66px}}
+                  @keyframes spinner_YJOP{0%,50%{x:15.66px;y:15.66px}25%{x:18.66px;y:18.66px}}`}
+                </style>
+                <rect
+                  className="spinner_zWVm"
+                  x="1"
+                  y="1"
+                  width="7.33"
+                  height="7.33"
+                  fill="currentColor"
+                />
+                <rect
+                  className="spinner_gfyD"
+                  x="8.33"
+                  y="1"
+                  width="7.33"
+                  height="7.33"
+                  fill="currentColor"
+                />
+                <rect
+                  className="spinner_T5JJ"
+                  x="1"
+                  y="8.33"
+                  width="7.33"
+                  height="7.33"
+                  fill="currentColor"
+                />
+                <rect
+                  className="spinner_E3Wz"
+                  x="15.66"
+                  y="1"
+                  width="7.33"
+                  height="7.33"
+                  fill="currentColor"
+                />
+                <rect
+                  className="spinner_g2vs"
+                  x="8.33"
+                  y="8.33"
+                  width="7.33"
+                  height="7.33"
+                  fill="currentColor"
+                />
+                <rect
+                  className="spinner_ctYB"
+                  x="1"
+                  y="15.66"
+                  width="7.33"
+                  height="7.33"
+                  fill="currentColor"
+                />
+                <rect
+                  className="spinner_BDNj"
+                  x="15.66"
+                  y="8.33"
+                  width="7.33"
+                  height="7.33"
+                  fill="currentColor"
+                />
+                <rect
+                  className="spinner_rCw3"
+                  x="8.33"
+                  y="15.66"
+                  width="7.33"
+                  height="7.33"
+                  fill="currentColor"
+                />
+                <rect
+                  className="spinner_Rszm"
+                  x="15.66"
+                  y="15.66"
+                  width="7.33"
+                  height="7.33"
+                  fill="currentColor"
+                />
+              </svg>
+              <span id="tokenTransferProgressTitle">Transferring tokens...</span>
+            </div>
+            <div
+              id="tokenTransferProgressSteps"
+              className="progress-steps"
+            >
               {progress.map((step, i) => (
                 <div key={i}>{step}</div>
               ))}
@@ -316,10 +440,15 @@ export function TokenTransfer({ networksDetected }: Props) {
         {isSuccess && txInfo && (
           <div
             id="token-transfer-success"
-            className="alert alert-success"
+            className="success-section"
           >
-            <strong id="interop-transfer-complete">{t("interop.transferComplete")}</strong>
-            <div className="info-row">
+            <div
+              className="success-title"
+              id="interop-transfer-complete"
+            >
+              {t("interop.transferComplete")}
+            </div>
+            <div className="success-row">
               <span
                 id="interop-status-src-chain-tx"
                 className="info-label"
@@ -330,7 +459,7 @@ export function TokenTransfer({ networksDetected }: Props) {
                 <code id="tokenTransferTxHashSource">{txInfo.sendTxHash}</code>
               </span>
             </div>
-            <div className="info-row">
+            <div className="success-row">
               <span
                 id="interop-destination-chain-tx"
                 className="info-label"
@@ -341,7 +470,7 @@ export function TokenTransfer({ networksDetected }: Props) {
                 <code id="tokenTransferTxHashDest">{txInfo.executeTxHash}</code>
               </span>
             </div>
-            <div className="info-row">
+            <div className="success-row">
               <span
                 id="interop-status-amount"
                 className="info-label"
@@ -357,7 +486,7 @@ export function TokenTransfer({ networksDetected }: Props) {
                 </span>
               )}
             </div>
-            <div className="info-row">
+            <div className="success-row">
               <span
                 id="interop-status-direction"
                 className="info-label"
