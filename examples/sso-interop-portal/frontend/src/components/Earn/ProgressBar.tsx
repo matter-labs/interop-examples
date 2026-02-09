@@ -29,9 +29,7 @@ export function PendingProgressBar({ addedAt }: { addedAt: string }) {
           style={{ width: `${progress}%` }}
         />
       </div>
-      <span className="pending-progress-text">
-        {t("earn.pending")}
-      </span>
+      <span className="pending-progress-text">{t("earn.pending")}</span>
     </div>
   );
 }
