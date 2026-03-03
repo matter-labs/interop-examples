@@ -1449,6 +1449,42 @@ button.earn-tab-btn.active:hover:not(:disabled) {
   font-size: 12px;
   font-weight: 600;
   line-height: 1;
+  cursor: default;
+}
+
+.inline-copy-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+button.copy-icon-btn {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border-radius: 999px;
+  background: rgba(7, 14, 160, 0.08);
+  color: #070ea0;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: none;
+}
+
+button.copy-icon-btn:hover:not(:disabled) {
+  background: rgba(7, 14, 160, 0.2);
+  transform: none;
+  box-shadow: none;
+}
+
+button.copy-icon-btn.copied {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+button.copy-icon-btn.copied:hover:not(:disabled) {
+  background: #bbf7d0;
 }
 
 .receive-groups {
@@ -1615,6 +1651,14 @@ button.earn-tab-btn.active:hover:not(:disabled) {
   margin-top: 4px;
   font-size: 12px;
   color: #555a66;
+}
+
+.send-alias-mono {
+  font-size: 13px;
+}
+
+.send-alias-link {
+  word-break: break-all;
 }
 
 @media (max-width: 768px) {

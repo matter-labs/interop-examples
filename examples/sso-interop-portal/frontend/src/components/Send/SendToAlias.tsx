@@ -22,12 +22,14 @@ export function SendToAlias() {
   const [isAliasLoading, setIsAliasLoading] = useState(false);
   const [depositRequest, setDepositRequest] = useState<DepositRequestData>();
   const [depositEvents, setDepositEvents] = useState<DepositEvent[]>([]);
+  const [copiedKey, setCopiedKey] = useState<string>();
 
   const { t } = useTranslation();
 
   const transferEvents = useMemo(() => {
     return depositEvents.filter((event) => hasTransferValue(event.amount));
   }, [depositEvents]);
+  const trackingLink = depositRequest ? buildTrackingLink(depositRequest.trackingId) : "";
 
   function getTrackingIdFromUrl(): string | null {
     if (typeof window === "undefined") return null;
@@ -139,7 +141,7 @@ export function SendToAlias() {
       localStorage.setItem(SEND_ALIAS_TRACKING_KEY, deposit.trackingId);
       setAliasSuccess(t("send.depositAddressGenerated"));
       await loadTracking(deposit.trackingId);
-    } catch (requestError) {
+    } catch (requestError: unknown) {
       if (requestError instanceof Error) {
         const message = requestError.message.toLowerCase();
         if (
@@ -160,14 +162,67 @@ export function SendToAlias() {
     }
   }
 
-  async function copyText(value: string, messageKey: string) {
+  async function copyText(value: string, key: string) {
     try {
       await navigator.clipboard.writeText(value);
-      setAliasSuccess(t(messageKey));
-      setAliasError(undefined);
+      setCopiedKey(key);
+      setTimeout(() => setCopiedKey((prev) => (prev === key ? undefined : prev)), 2000);
     } catch {
       setAliasError(t("send.copyFailed"));
     }
+  }
+
+  function CopyIconButton({ onClick, label, copied }: { onClick: () => void; label: string; copied: boolean }) {
+    return (
+      <button
+        className={`copy-icon-btn ${copied ? "copied" : ""}`}
+        type="button"
+        onClick={onClick}
+        aria-label={label}
+        title={label}
+      >
+        {copied ? (
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M20 6L9 17L4 12"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        ) : (
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <rect
+              x="9"
+              y="9"
+              width="13"
+              height="13"
+              rx="2"
+              stroke="currentColor"
+              strokeWidth="2"
+            />
+            <path
+              d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+              stroke="currentColor"
+              strokeWidth="2"
+            />
+          </svg>
+        )}
+      </button>
+    );
   }
 
   return (
@@ -214,28 +269,27 @@ export function SendToAlias() {
               <strong>{t("send.depositAddress")}</strong>
             </div>
             <div className="aave-info-row">
-              <code>{depositRequest.l1DepositAddress}</code>
-            </div>
-            <div className="receive-actions">
-              <button
-                className="secondary-brand small"
-                type="button"
-                onClick={() => void copyText(depositRequest.l1DepositAddress, "send.depositAddressCopied")}
-              >
-                {t("send.copyAddress")}
-              </button>
-              <button
-                className="secondary-brand small"
-                type="button"
-                onClick={() => void copyText(buildTrackingLink(depositRequest.trackingId), "send.trackingLinkCopied")}
-              >
-                {t("send.copyTrackingLink")}
-              </button>
+              <div className="inline-copy-row">
+                <code className="send-alias-mono">{depositRequest.l1DepositAddress}</code>
+                <CopyIconButton
+                  label={t("send.copyAddress")}
+                  copied={copiedKey === "send-deposit-address"}
+                  onClick={() => void copyText(depositRequest.l1DepositAddress, "send-deposit-address")}
+                />
+              </div>
             </div>
             <div className="aave-info-row">
-              <span>
-                {t("send.trackingId")}: {depositRequest.trackingId}
-              </span>
+              <strong>{t("send.trackingLink")}</strong>
+            </div>
+            <div className="aave-info-row">
+              <div className="inline-copy-row">
+                <code className="send-alias-mono send-alias-link">{trackingLink}</code>
+                <CopyIconButton
+                  label={t("send.copyTrackingLink")}
+                  copied={copiedKey === "send-tracking-link"}
+                  onClick={() => void copyText(trackingLink, "send-tracking-link")}
+                />
+              </div>
             </div>
           </div>
 
