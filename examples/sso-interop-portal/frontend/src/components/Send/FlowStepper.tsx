@@ -9,7 +9,10 @@ export function FlowStepper({ events, t }: { events: DepositEvent[]; t: (key: st
     { key: "complete", label: t("send.stepComplete") },
   ];
 
-  const activeIndex = Math.max(0, ...events.map((event) => steps.findIndex((step) => step.key === statusToStep(event.status, event.stuck))));
+  const activeIndex = Math.max(
+    0,
+    ...events.map((event) => steps.findIndex((step) => step.key === statusToStep(event.status, event.stuck))),
+  );
 
   return (
     <div className="send-alias-progress">
@@ -24,7 +27,9 @@ export function FlowStepper({ events, t }: { events: DepositEvent[]; t: (key: st
               className={`send-alias-step ${complete ? "complete" : current ? "current" : ""}`}
             >
               <div className="send-alias-step-title">{step.label}</div>
-              <div className="send-alias-step-state">{complete ? t("send.done") : current ? t("send.inProgress") : t("send.pending")}</div>
+              <div className="send-alias-step-state">
+                {complete ? t("send.done") : current ? t("send.inProgress") : t("send.pending")}
+              </div>
             </div>
           );
         })}

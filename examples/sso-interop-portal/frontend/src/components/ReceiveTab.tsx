@@ -3,7 +3,14 @@ import { useTranslation } from "react-i18next";
 import type { Address } from "viem";
 import { formatEther, getAddress } from "viem";
 
-import { aliasKeyFromParts, normalizeAlias, shortAddress, STATUS_LABELS, statusBadgeClass, STORAGE_KEY_ALIAS_BY_ACCOUNT } from "~/utils/aliases/utils";
+import {
+  aliasKeyFromParts,
+  normalizeAlias,
+  shortAddress,
+  STATUS_LABELS,
+  statusBadgeClass,
+  STORAGE_KEY_ALIAS_BY_ACCOUNT,
+} from "~/utils/aliases/utils";
 import { RESOLVER_URL } from "~/utils/constants";
 import type { Tab } from "~/utils/tabs";
 import type { DepositRow, GroupedDeposit } from "~/utils/types";
@@ -111,9 +118,7 @@ export function ReceiveTab({ accountAddress, setActiveTab }: Props) {
       }
 
       const aliasKey = aliasKeyFromParts(normalizedNickname, "");
-      const data = await runRequest<DepositRow[]>(
-        `${RESOLVER_URL}/alias/deposits?aliasKey=${aliasKey}`,
-      );
+      const data = await runRequest<DepositRow[]>(`${RESOLVER_URL}/alias/deposits?aliasKey=${aliasKey}`);
 
       const connected = getAddress(accountAddress).toLowerCase();
       const isOwnedFromRows =
@@ -321,11 +326,7 @@ export function ReceiveTab({ accountAddress, setActiveTab }: Props) {
             {t("receive.associatedAlias")}: <strong>{associatedAlias}</strong>
           </div>
         )}
-        {associatedAlias && (
-          <div className="alert alert-info">
-            {t("receive.associatedAliasHelp")}
-          </div>
-        )}
+        {associatedAlias && <div className="alert alert-info">{t("receive.associatedAliasHelp")}</div>}
         {!associatedAlias && (
           <div className="receive-grid">
             <div className="form-group">
@@ -383,7 +384,9 @@ export function ReceiveTab({ accountAddress, setActiveTab }: Props) {
           </div>
         )}
         {successMessage && <div className="alert alert-success">{successMessage}</div>}
-        {errorMessage && errorMessage !== t("receive.aliasTaken") && <div className="alert alert-error">{errorMessage}</div>}
+        {errorMessage && errorMessage !== t("receive.aliasTaken") && (
+          <div className="alert alert-error">{errorMessage}</div>
+        )}
       </div>
 
       <div className="receive-groups">

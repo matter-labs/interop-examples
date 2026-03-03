@@ -116,7 +116,10 @@ export const AAVE_CONTRACTS: { [key: string]: `0x${string}` } = {
 
 export const BASE_TOKEN_ADDRESS: `0x${string}` = "0x000000000000000000000000000000000000800A";
 // ZKSync L1 Bridge address (Sepolia)
-export const BRIDGEHUB_ADDRESS = envAddress(import.meta.env?.VITE_BRIDGEHUB_ADDRESS, "0xc4FD2580C3487bba18D63f50301020132342fdbD");
+export const BRIDGEHUB_ADDRESS = envAddress(
+  import.meta.env?.VITE_BRIDGEHUB_ADDRESS,
+  "0xc4FD2580C3487bba18D63f50301020132342fdbD",
+);
 
 // ZKSync Chain ID (ZKSync OS Testnet)
 export const L2_CHAIN_ID = BigInt(ZKSYNC_OS_CHAIN_ID);
