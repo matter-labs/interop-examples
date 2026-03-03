@@ -26,8 +26,10 @@ export function ReceiveTab({ accountAddress, setActiveTab }: Props) {
   const [isAliasOwned, setIsAliasOwned] = useState(false);
   const [ownedAliases, setOwnedAliases] = useState<Record<string, true>>({});
   const [associatedAlias, setAssociatedAlias] = useState<string>();
+  const [copiedAddress, setCopiedAddress] = useState<string>();
   const { t } = useTranslation();
   const activeAlias = normalizeAlias(associatedAlias || nickname);
+  const hasStuckTransactions = rows.some((row) => (row.events ?? []).some((event) => event.stuck));
 
   function loadAliasMap(): Record<string, string> {
     if (typeof window === "undefined") return {};
@@ -124,7 +126,7 @@ export function ReceiveTab({ accountAddress, setActiveTab }: Props) {
       if (!isOwnedFromRows) {
         setRows([]);
         setIsAliasOwned(false);
-        setErrorMessage("already taken");
+        setErrorMessage(t("receive.aliasTaken"));
         return;
       }
 
@@ -174,7 +176,7 @@ export function ReceiveTab({ accountAddress, setActiveTab }: Props) {
       );
       if (exists.result === "match" && !isAliasOwned && !ownedAliases[normalizedNickname]) {
         setRegistrationMessageType("error");
-        setRegistrationMessage("already taken");
+        setRegistrationMessage(t("receive.aliasTaken"));
         return;
       }
 
@@ -237,6 +239,69 @@ export function ReceiveTab({ accountAddress, setActiveTab }: Props) {
     setSuccessMessage(t("receive.retryAllSuccess", { count: stuckEvents.length }));
   }
 
+  async function copyDepositAddress(address: string) {
+    try {
+      await navigator.clipboard.writeText(address);
+      setCopiedAddress(address);
+      setTimeout(() => setCopiedAddress((prev) => (prev === address ? undefined : prev)), 2000);
+    } catch {
+      setErrorMessage(t("receive.requestFailed"));
+    }
+  }
+
+  function CopyIconButton({ onClick, label, copied }: { onClick: () => void; label: string; copied: boolean }) {
+    return (
+      <button
+        className={`copy-icon-btn ${copied ? "copied" : ""}`}
+        type="button"
+        onClick={onClick}
+        aria-label={label}
+        title={label}
+      >
+        {copied ? (
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M20 6L9 17L4 12"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        ) : (
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <rect
+              x="9"
+              y="9"
+              width="13"
+              height="13"
+              rx="2"
+              stroke="currentColor"
+              strokeWidth="2"
+            />
+            <path
+              d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+              stroke="currentColor"
+              strokeWidth="2"
+            />
+          </svg>
+        )}
+      </button>
+    );
+  }
+
   return (
     <div
       className="tab-content"
@@ -294,20 +359,22 @@ export function ReceiveTab({ accountAddress, setActiveTab }: Props) {
           >
             {t("receive.refresh")}
           </button>
-          <button
-            type="button"
-            onClick={() => void retryAllStuck()}
-            disabled={isBusy}
-          >
-            {t("receive.retryAll")}
-            <span
-              className="receive-tooltip"
-              title={t("receive.retryAllTooltip")}
-              aria-label={t("receive.retryAllTooltip")}
+          {hasStuckTransactions && (
+            <button
+              type="button"
+              onClick={() => void retryAllStuck()}
+              disabled={isBusy}
             >
-              ?
-            </span>
-          </button>
+              {t("receive.retryAll")}
+              <span
+                className="receive-tooltip"
+                title={t("receive.retryAllTooltip")}
+                aria-label={t("receive.retryAllTooltip")}
+              >
+                ?
+              </span>
+            </button>
+          )}
         </div>
 
         {registrationMessage && (
@@ -316,13 +383,13 @@ export function ReceiveTab({ accountAddress, setActiveTab }: Props) {
           </div>
         )}
         {successMessage && <div className="alert alert-success">{successMessage}</div>}
-        {errorMessage && errorMessage !== "already taken" && <div className="alert alert-error">{errorMessage}</div>}
+        {errorMessage && errorMessage !== t("receive.aliasTaken") && <div className="alert alert-error">{errorMessage}</div>}
       </div>
 
       <div className="receive-groups">
-        {!isAliasOwned && errorMessage === "already taken" && (
+        {!isAliasOwned && errorMessage === t("receive.aliasTaken") && (
           <div className="card">
-            <div className="alert alert-error">already taken</div>
+            <div className="alert alert-error">{t("receive.aliasTaken")}</div>
           </div>
         )}
         {Object.values(groupedDeposits).map((group) => {
@@ -335,7 +402,15 @@ export function ReceiveTab({ accountAddress, setActiveTab }: Props) {
             >
               <div className="receive-group-header">
                 <div className="receive-group-address">
-                  {t("receive.depositAddress")}: <code>{group.address}</code>
+                  {t("receive.depositAddress")}:
+                  <span className="inline-copy-row">
+                    <code>{group.address}</code>
+                    <CopyIconButton
+                      label={t("send.copyAddress")}
+                      copied={copiedAddress === group.address}
+                      onClick={() => void copyDepositAddress(group.address)}
+                    />
+                  </span>
                 </div>
               </div>
 
@@ -346,7 +421,16 @@ export function ReceiveTab({ accountAddress, setActiveTab }: Props) {
                       <th>{t("receive.asset")}</th>
                       <th>{t("receive.amount")}</th>
                       <th>{t("receive.status")}</th>
-                      <th>{t("receive.attempts")}</th>
+                      <th>
+                        {t("receive.attempts")}
+                        <span
+                          className="receive-tooltip"
+                          title={t("receive.attemptsTooltip")}
+                          aria-label={t("receive.attemptsTooltip")}
+                        >
+                          ?
+                        </span>
+                      </th>
                       <th>{t("receive.action")}</th>
                     </tr>
                   </thead>

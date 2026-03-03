@@ -1,6 +1,7 @@
 import { registerNewPasskey } from "sso-legacy/client/passkey";
 import { type Address, type Hex } from "viem";
 
+import { SEND_ALIAS_TRACKING_KEY, STORAGE_KEY_ALIAS_BY_ACCOUNT } from "../aliases/utils";
 import { STORAGE_KEY_ACCOUNT, STORAGE_KEY_PASSKEY } from "../constants";
 import type { PasskeyCredential } from "../types";
 
@@ -59,6 +60,8 @@ export function handleResetPasskey(text: string) {
   if (confirm(text)) {
     localStorage.removeItem(STORAGE_KEY_PASSKEY);
     localStorage.removeItem(STORAGE_KEY_ACCOUNT);
+    localStorage.removeItem(STORAGE_KEY_ALIAS_BY_ACCOUNT);
+    localStorage.removeItem(SEND_ALIAS_TRACKING_KEY);
     location.reload();
   }
 }
