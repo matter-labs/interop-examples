@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next";
 import type { Address } from "viem";
 import type { UseBalanceReturnType } from "wagmi";
 
+import { SHOW_ALIASES } from "~/utils/constants";
 import type { Tab } from "~/utils/tabs";
 import type { PasskeyCredential } from "~/utils/types";
 
@@ -40,7 +41,7 @@ export function SendTab({ accountAddress, balance, passkeyCredentials, setActive
         passkeyCredentials={passkeyCredentials}
       />
 
-      <SendToAlias />
+      {SHOW_ALIASES && <SendToAlias />}
     </div>
   );
 }

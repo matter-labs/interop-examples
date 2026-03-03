@@ -32,6 +32,7 @@ export const DEFAULT_ZKSYNC_OS_WS_URL =
   import.meta.env?.VITE_ZKSYNC_OS_WS_URL || "wss://zksync-os-testnet-alpha.zksync.dev/ws";
 
 export const SHOW_INTEROP = import.meta.env?.VITE_SHOW_INTEROP === "true";
+export const SHOW_ALIASES = import.meta.env?.VITE_SHOW_ALIAS === "true";
 
 // ZKsync OS configuration
 export const zksyncOsTestnet = defineChain({
