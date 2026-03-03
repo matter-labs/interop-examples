@@ -1672,14 +1672,14 @@ button.copy-icon-btn.copied:hover:not(:disabled) {
   }
 }
 
-#receive-icon{
+#receive-icon {
   transform: rotate(180deg);
 }
 
-.step-number{
+.step-number {
   font-weight: bold;
 }
 
-.alias-step{
+.alias-step {
   margin-bottom: 10px;
 }
