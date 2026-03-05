@@ -5,6 +5,7 @@ import { entryPoint08Abi } from "viem/account-abstraction";
 import { sepolia } from "viem/chains";
 import { useBalance, type UseBalanceReturnType, useReadContract } from "wagmi";
 
+import { SHOW_ALIASES } from "~/utils/constants";
 import { FAUCET_ENDPOINT, SHOW_INTEROP, ssoContracts, zksyncOsTestnet } from "~/utils/constants";
 import type { Tab } from "~/utils/tabs";
 
@@ -79,7 +80,7 @@ export function QuickActions({
         <div className="action-card">
           <img
             src="/ic-h-send.svg"
-            alt=""
+            alt="send-icon"
             className="action-card-icon"
           />
           <h3 className="action-card-title">{t("home.sendTitle")}</h3>
@@ -92,6 +93,26 @@ export function QuickActions({
             {t("home.quickSendBtn")}
           </button>
         </div>
+
+        {SHOW_ALIASES && (
+          <div className="action-card">
+            <img
+              src="/ic-h-send.svg"
+              alt="receive-icon"
+              className="action-card-icon"
+              id="receive-icon"
+            />
+            <h3 className="action-card-title">{t("home.receiveTitle")}</h3>
+            <p className="action-card-desc">{t("home.receiveDesc")}</p>
+            <button
+              id="quickReceiveBtn"
+              className="secondary-brand"
+              onClick={() => setActiveTab("Receive")}
+            >
+              {t("home.quickReceiveBtn")}
+            </button>
+          </div>
+        )}
 
         <div className={`action-card-wrapper ${aaveBalance ? "has-aave" : ""}`}>
           {aaveBalance && (
